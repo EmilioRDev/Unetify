@@ -59,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:hint="Email"
                     android:inputType="textEmailAddress"
-                    android:background="@color/white"/>
+                    android:background="#00FFFFFF"/>
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
@@ -87,7 +87,7 @@
                     android:layout_height="wrap_content"
                     android:hint="Contraseña"
                     android:inputType="textPassword"
-                    android:background="@color/white"/>
+                    android:background="#00FFFFFF"/>
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
@@ -119,6 +119,7 @@
             android:textSize="17sp"/>
 
         <TextView
+            android:id="@+id/tvRegister"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="REGISTRATE AQUÍ"
