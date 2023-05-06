@@ -3,6 +3,8 @@ package com.example.unetify.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import dmax.dialog.SpotsDialog;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -34,6 +37,7 @@ public class RegisterActivity extends AppCompatActivity {
     Button mButtonRegister;
     AuthProvider mAuthProvider;
     UsersProvider mUsersProvider;
+    AlertDialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +53,11 @@ public class RegisterActivity extends AppCompatActivity {
 
         mAuthProvider = new AuthProvider();
         mUsersProvider = new UsersProvider();
+        mDialog = new SpotsDialog.Builder()
+                .setContext(this)
+                .setMessage("Espere un momento")
+                .setCancelable(false)
+                .build();
 
         mButtonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +99,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void createUser(String username,String email, String password){
+        mDialog.show();
         mAuthProvider.register(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -103,11 +113,14 @@ public class RegisterActivity extends AppCompatActivity {
                     mUsersProvider.create(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
+                            mDialog.dismiss();
                             if (task.isSuccessful()) {
                                 Log.i("BBDD","El usuario se almaceno correctamente en la base de datos");
                                 Toast.makeText(RegisterActivity.this, "El usuario se registro correctamente", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
                                 clearInputText();
-                                finish();
                             }else{
                                 Log.e("BBDD","No se pudo almacenar correctamente el usuario en la base de datos");
                                 Toast.makeText(RegisterActivity.this, "No se pudo registrar el usuario", Toast.LENGTH_SHORT).show();
@@ -115,6 +128,7 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     });
                 }else {
+                    mDialog.dismiss();
                     Toast.makeText(RegisterActivity.this, "No se pudo registrar el usuario", Toast.LENGTH_SHORT).show();
                 }
             }
