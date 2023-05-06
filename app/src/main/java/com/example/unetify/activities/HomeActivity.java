@@ -1,8 +1,10 @@
-package com.example.unetify;
+package com.example.unetify.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.unetify.R;
 
 public class HomeActivity extends AppCompatActivity {
 
