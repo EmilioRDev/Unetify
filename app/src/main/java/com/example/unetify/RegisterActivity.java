@@ -129,5 +129,9 @@ public class RegisterActivity extends AppCompatActivity {
         mtextInputEmail.setText("");
         mtextInputPassword.setText("");
         mtextInputConfirmPassword.setText("");
+        mtextInputUsername.clearFocus();
+        mtextInputEmail.clearFocus();
+        mtextInputPassword.clearFocus();
+        mtextInputConfirmPassword.clearFocus();
     }
 }
