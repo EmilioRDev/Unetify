@@ -99,10 +99,11 @@ public class RegisterActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Log.d("BBDD","El usuario se almaceno correctamente en la base de datos");
+                                Log.i("BBDD","El usuario se almaceno correctamente en la base de datos");
                                 Toast.makeText(RegisterActivity.this, "El usuario se registro correctamente", Toast.LENGTH_SHORT).show();
+                                clearInputText();
                             }else{
-                                Log.d("BBDD","No se pudo almacenar correctamente el usuario en la base de datos");
+                                Log.e("BBDD","No se pudo almacenar correctamente el usuario en la base de datos");
                             }
                         }
                     });
@@ -119,5 +120,13 @@ public class RegisterActivity extends AppCompatActivity {
         Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
+    }
+
+    /*Limpiar los campos*/
+    private void clearInputText(){
+        mtextInputUsername.setText("");
+        mtextInputEmail.setText("");
+        mtextInputPassword.setText("");
+        mtextInputConfirmPassword.setText("");
     }
 }
