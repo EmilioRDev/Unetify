@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "310908694692",
+    "project_id": "unetify",
+    "storage_bucket": "unetify.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:310908694692:android:85535553e82878b5117631",
+        "android_client_info": {
+          "package_name": "com.example.unetify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "310908694692-h7ka9l786pd6fljh36gv9loio8pck4k0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8YQjqI9dfwvZ7625Iuj6DEPSZLbxvIlM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "310908694692-h7ka9l786pd6fljh36gv9loio8pck4k0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
