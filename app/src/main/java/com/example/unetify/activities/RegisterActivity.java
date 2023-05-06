@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.unetify.R;
+import com.example.unetify.models.User;
+import com.example.unetify.providers.AuthProvider;
+import com.example.unetify.providers.UsersProvider;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -29,8 +32,8 @@ public class RegisterActivity extends AppCompatActivity {
     CircleImageView mCircleImageViewBack;
     TextInputEditText mtextInputUsername, mtextInputEmail, mtextInputPassword, mtextInputConfirmPassword;
     Button mButtonRegister;
-    FirebaseAuth mAuth;
-    FirebaseFirestore mFirestore;
+    AuthProvider mAuthProvider;
+    UsersProvider mUsersProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +47,8 @@ public class RegisterActivity extends AppCompatActivity {
         mtextInputConfirmPassword = findViewById(R.id.textInputConfirmPassword);
         mButtonRegister = findViewById(R.id.btnRegister);
 
-        mAuth = FirebaseAuth.getInstance();
-        mFirestore = FirebaseFirestore.getInstance();
+        mAuthProvider = new AuthProvider();
+        mUsersProvider = new UsersProvider();
 
         mButtonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +82,7 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
                 }
             }else {
-                Toast.makeText(this, "Insertastes todos los campos y el email no es válido", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "email no válido", Toast.LENGTH_LONG).show();
             }
         }else{
             Toast.makeText(this, "Para continuar inserta todos los campos", Toast.LENGTH_SHORT).show();
@@ -87,15 +90,17 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void createUser(String username,String email, String password){
-        mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        mAuthProvider.register(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    String id = mAuth.getCurrentUser().getUid();
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("email",email);
-                    map.put("username",username);
-                    mFirestore.collection("Users").document(id).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    String id = mAuthProvider.getUid();
+                    User user = new User();
+                    user.setId(id);
+                    user.setEmail(email);
+                    user.setUsername(username);
+
+                    mUsersProvider.create(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
@@ -105,6 +110,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 finish();
                             }else{
                                 Log.e("BBDD","No se pudo almacenar correctamente el usuario en la base de datos");
+                                Toast.makeText(RegisterActivity.this, "No se pudo registrar el usuario", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

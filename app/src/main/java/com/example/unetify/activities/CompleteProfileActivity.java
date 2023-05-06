@@ -11,6 +11,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.unetify.R;
+import com.example.unetify.models.User;
+import com.example.unetify.providers.AuthProvider;
+import com.example.unetify.providers.UsersProvider;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -24,8 +27,8 @@ public class CompleteProfileActivity extends AppCompatActivity {
 
     TextInputEditText mtextInputUsername;
     Button mButtonRegister;
-    FirebaseAuth mAuth;
-    FirebaseFirestore mFirestore;
+    AuthProvider mAuthProvider;
+    UsersProvider mUsersProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +38,8 @@ public class CompleteProfileActivity extends AppCompatActivity {
         mtextInputUsername = findViewById(R.id.textInputUsername);
         mButtonRegister = findViewById(R.id.btnRegister);
 
-        mAuth = FirebaseAuth.getInstance();
-        mFirestore = FirebaseFirestore.getInstance();
+        mAuthProvider = new AuthProvider();
+        mUsersProvider = new UsersProvider();
 
         mButtonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,10 +60,11 @@ public class CompleteProfileActivity extends AppCompatActivity {
     }
 
     private void updateUser(String username){
-        String id = mAuth.getCurrentUser().getUid();
-        Map<String, Object> map = new HashMap<>();
-        map.put("username",username);
-        mFirestore.collection("Users").document(id).update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+        String id = mAuthProvider.getUid();
+        User user = new User();
+        user.setId(id);
+        user.setUsername(username);
+        mUsersProvider.update(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
