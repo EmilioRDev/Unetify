@@ -102,6 +102,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 Log.i("BBDD","El usuario se almaceno correctamente en la base de datos");
                                 Toast.makeText(RegisterActivity.this, "El usuario se registro correctamente", Toast.LENGTH_SHORT).show();
                                 clearInputText();
+                                finish();
                             }else{
                                 Log.e("BBDD","No se pudo almacenar correctamente el usuario en la base de datos");
                             }
