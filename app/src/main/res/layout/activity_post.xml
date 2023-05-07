@@ -34,6 +34,7 @@
                 android:orientation="horizontal">
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewUp"
                     android:layout_width="0dp"
                     android:layout_height="190dp"
                     app:cardBackgroundColor="@color/white"
@@ -46,7 +47,6 @@
                         android:id="@+id/imageViewPost"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center|top"
                         android:src="@drawable/ic_upload"
                         />
                 </androidx.cardview.widget.CardView>

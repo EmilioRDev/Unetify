@@ -23,7 +23,7 @@ public class AuthProvider {
         return mAuth.signInWithEmailAndPassword(email,password);
     }
 
-    public Task<AuthResult> googlelogin(GoogleSignInAccount googleSignInAccount) {
+    public Task<AuthResult> googleLogin(GoogleSignInAccount googleSignInAccount) {
         AuthCredential credential = GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(), null);
         return mAuth.signInWithCredential(credential);
     }
