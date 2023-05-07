@@ -5,27 +5,29 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.unetify.R;
-import com.example.unetify.providers.ImageProviders;
+import com.example.unetify.models.Post;
+import com.example.unetify.providers.AuthProvider;
+import com.example.unetify.providers.ImageProvider;
+import com.example.unetify.providers.PostProvider;
 import com.example.unetify.utils.FileUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
@@ -33,27 +35,34 @@ import java.io.File;
 public class PostActivity extends AppCompatActivity {
 
     ImageView mImageViewPost;
-    //CardView mCardView;
     File mImageFile;
     Button mButtonPost;
-    ImageProviders mImageProviders;
-    private final int GALLERY_REQUEST_CODE = 1;
+    TextInputEditText mTextInputTitle,mTextInputDescription;
+    ImageProvider mImageProvider;
+    PostProvider mPostProvider;
+    AuthProvider mAuthProvider;
+    String mTitle = "";
+    String mDescription = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
 
-        mImageProviders = new ImageProviders();
+        mImageProvider = new ImageProvider();
+        mPostProvider = new PostProvider();
+        mAuthProvider = new AuthProvider();
 
         mImageViewPost = findViewById(R.id.imageViewPost);
-        //mCardView = findViewById(R.id.cardViewUp);
         mButtonPost = findViewById(R.id.btnPost);
+        mTextInputTitle = findViewById(R.id.TextInputTitle);
+        mTextInputDescription = findViewById(R.id.TextInputDescription);
 
         mButtonPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveImage();
+                clickPost();
             }
         });
         mImageViewPost.setOnClickListener(new View.OnClickListener() {
@@ -64,13 +73,51 @@ public class PostActivity extends AppCompatActivity {
         });
     }
 
+    private void clickPost() {
+
+        mTitle = mTextInputTitle.getText().toString();
+        mDescription = mTextInputDescription.getText().toString();
+
+        if (!mTitle.isEmpty() && !mDescription.isEmpty()) {
+            if (mImageFile != null){
+                saveImage();
+            }else {
+                Toast.makeText(this, "Debes seleccionar una imagen", Toast.LENGTH_SHORT).show();
+            }
+        }else {
+            Toast.makeText(this, "Completa los campos para publicar", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void saveImage() {
-        mImageProviders.save(PostActivity.this,mImageFile).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+        mImageProvider.save(PostActivity.this,mImageFile).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(PostActivity.this, "La imagen se almaceno correctamente", Toast.LENGTH_SHORT).show();
+                    mImageProvider.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String url = uri.toString();
+                            Post post = new Post();
+                            post.setImage(url);
+                            post.setTitle(mTitle);
+                            post.setDescription(mDescription);
+                            post.setIdUser(mAuthProvider.getUid());
+                            mPostProvider.save(post).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> taskSave) {
+                                    if (taskSave.isSuccessful()){
+                                        Toast.makeText(PostActivity.this, "La información se almaceno correctamente", Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        Log.e("ERROR","Se produjo un error al almacenar la imagen en la base de datos ");
+                                        Toast.makeText(PostActivity.this, "No se pudo almacenar la información", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        }
+                    });
                 }else {
+                    Log.e("ERROR","Se produjo un error al almacenar la imagen en el storage");
                     Toast.makeText(PostActivity.this, "Hubo un error al almacenar la imagen", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -86,8 +133,6 @@ public class PostActivity extends AppCompatActivity {
                         try {
                             mImageFile = FileUtil.from(PostActivity.this,result.getData().getData());
                             mImageViewPost.setImageBitmap(BitmapFactory.decodeFile(mImageFile.getAbsolutePath()));
-                            /*mImageViewPost.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                            mImageViewPost.setLayoutParams(new CardView.LayoutParams(mCardView.getWidth(), ViewGroup.LayoutParams.MATCH_PARENT));*/
 
                         }catch (Exception e){
                             Log.e("ERROR","Se produjo un error "+ e.getMessage());
