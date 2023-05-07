@@ -49,6 +49,15 @@
                         android:layout_height="match_parent"
                         android:src="@drawable/ic_upload"
                         />
+
+                    <TextView
+                        android:id="@+id/textViewUp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:text="SUBIR IMAGEN"
+                        android:textAlignment="center"
+                        android:layout_gravity="bottom"/>
                 </androidx.cardview.widget.CardView>
 
             </LinearLayout>
@@ -75,7 +84,7 @@
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/TextInputTitle"
+                    android:id="@+id/textInputTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Titulo"
@@ -105,7 +114,7 @@
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/TextInputDescription"
+                    android:id="@+id/textInputDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Descripción"

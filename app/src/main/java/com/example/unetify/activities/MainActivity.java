@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -72,9 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
         mButtonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                login();
-            }
+            public void onClick(View v) { login(); }
         });
 
         mButtonGoogle.setOnClickListener(new View.OnClickListener() {
@@ -171,6 +170,11 @@ public class MainActivity extends AppCompatActivity {
     private void login(){
         String email = mTextInputEmail.getText().toString();
         String password = mTextInputPassword.getText().toString();
+
+        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)){
+            Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show();
+            return;
+        }
         mDialog.show();
         mAuthProvider.login(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -180,16 +184,16 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "signInWithEmailAndPassword:success");
                     Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                     startActivity(intent);
-                    clearInputText();
+                    clearForm();
                 }else{
-                    Toast.makeText(MainActivity.this, "El email o la contraseña que ingresastes no son correctas", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "El email o la contraseña que ingresastes no son correctos", Toast.LENGTH_LONG).show();
                 }
             }
         });
     }
 
     /*Limpiar los campos*/
-    private void clearInputText(){
+    private void clearForm(){
         mTextInputEmail.setText("");
         mTextInputPassword.setText("");
         mTextInputEmail.clearFocus();
