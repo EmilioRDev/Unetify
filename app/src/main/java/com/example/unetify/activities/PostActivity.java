@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -48,7 +49,9 @@ public class PostActivity extends AppCompatActivity {
     String mTitle = "";
     String mDescription = "";
     AlertDialog mDialog;
+    AlertDialog.Builder mBuilderSelector;
     TextView mTextViewUp;
+    CharSequence options[];
 
 
     @Override
@@ -64,6 +67,9 @@ public class PostActivity extends AppCompatActivity {
                 .setMessage("Espere un momento")
                 .setCancelable(false)
                 .build();
+        mBuilderSelector = new AlertDialog.Builder(this);
+        mBuilderSelector.setTitle("Selecciona una opción");
+        options = new CharSequence[]{"Imagen de galeria","Tomar foto"};
 
         mImageViewPost = findViewById(R.id.imageViewPost);
         mButtonPost = findViewById(R.id.btnPost);
@@ -80,8 +86,7 @@ public class PostActivity extends AppCompatActivity {
         mImageViewPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openGallery();
-
+                selectOptionImage();
                 try {
                     Thread.sleep(1000);
                     mTextViewUp.setText("");
@@ -90,6 +95,27 @@ public class PostActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void selectOptionImage() {
+
+        mBuilderSelector.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 0){
+                    openGallery();
+                } else if (which == 1) {
+                    takePhoto();
+                }
+            }
+        });
+
+        mBuilderSelector.show();
+
+    }
+
+    private void takePhoto() {
+        Toast.makeText(this, "Selecciono tomar foto", Toast.LENGTH_SHORT).show();
     }
 
     private void clickPost() {
