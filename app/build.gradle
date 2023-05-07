@@ -38,7 +38,7 @@ dependencies {
     implementation 'io.github.florent37:shapeofview:1.4.7'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.github.d-max:spots-dialog:1.1@aar'
-    implementation 'id.zelory:compressor:3.0.1'
+    implementation 'id.zelory:compressor:2.1.1'
     implementation 'com.squareup.picasso:picasso:2.8'
 
     implementation platform('com.google.firebase:firebase-bom:31.5.0')
