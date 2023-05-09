@@ -5,15 +5,23 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -32,8 +40,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Date;
 
 import dmax.dialog.SpotsDialog;
 
@@ -52,6 +63,11 @@ public class PostActivity extends AppCompatActivity {
     AlertDialog.Builder mBuilderSelector;
     TextView mTextViewUp;
     CharSequence options[];
+
+    private final int PHOTO_REQUEST_CODE = 1;
+    String mAbsolutePhotoPath;
+    String mPhotoPath;
+    File mPhotoFile;
 
 
     @Override
@@ -105,7 +121,7 @@ public class PostActivity extends AppCompatActivity {
                 if (which == 0){
                     openGallery();
                 } else if (which == 1) {
-                    takePhoto();
+                        takePhoto();
                 }
             }
         });
@@ -115,7 +131,34 @@ public class PostActivity extends AppCompatActivity {
     }
 
     private void takePhoto() {
-        Toast.makeText(this, "Selecciono tomar foto", Toast.LENGTH_SHORT).show();
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null){
+            File photoFile =  null;
+
+            try {
+                photoFile = createPhotoFile();
+            }catch (Exception e){
+                Toast.makeText(this, "Hubo un error con el archivo "+ e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+            if (photoFile !=null){
+                Uri photoUri = FileProvider.getUriForFile(PostActivity.this,"com.example.unetify", photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                startActivityForResult(takePictureIntent, PHOTO_REQUEST_CODE);
+            }
+        }
+    }
+
+    private File createPhotoFile() throws IOException {
+        File storegeDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File photoFile = File.createTempFile(
+                new Date() + "_photo",
+                ".jpg",
+                storegeDir
+        );
+        mPhotoPath = "file:" + photoFile.getAbsolutePath();
+        mAbsolutePhotoPath = photoFile.getAbsolutePath();
+        return photoFile;
     }
 
     private void clickPost() {
@@ -125,8 +168,10 @@ public class PostActivity extends AppCompatActivity {
 
         if (!mTitle.isEmpty() && !mDescription.isEmpty()) {
             if (mImageFile != null){
-                saveImage();
-            }else {
+                saveImage(mImageFile);
+            } else if (mPhotoPath !=null) {
+                saveImage(mPhotoFile);
+            } else {
                 Toast.makeText(this, "Debes seleccionar una imagen", Toast.LENGTH_SHORT).show();
             }
         }else {
@@ -134,9 +179,9 @@ public class PostActivity extends AppCompatActivity {
         }
     }
 
-    private void saveImage() {
+    private void saveImage(File imageFile) {
         mDialog.show();
-        mImageProvider.save(PostActivity.this,mImageFile).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+        mImageProvider.save(PostActivity.this,imageFile).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if (task.isSuccessful()) {
@@ -173,6 +218,7 @@ public class PostActivity extends AppCompatActivity {
         });
     }
 
+
     private void clearForm() {
         mTextInputTitle.setText("");
         mTextInputTitle.clearFocus();
@@ -192,6 +238,7 @@ public class PostActivity extends AppCompatActivity {
                     if (result.getResultCode() == Activity.RESULT_OK) {
 
                         try {
+                            mPhotoFile=null;
                             mImageFile = FileUtil.from(PostActivity.this,result.getData().getData());
                             mImageViewPost.setImageBitmap(BitmapFactory.decodeFile(mImageFile.getAbsolutePath()));
 
@@ -208,5 +255,18 @@ public class PostActivity extends AppCompatActivity {
         Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
         galleryIntent.setType("image/*");
         galleryLauncher.launch(galleryIntent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        /**
+         * SELECCION DE FOTOGRAFIA
+         */
+        if (requestCode == PHOTO_REQUEST_CODE && resultCode == RESULT_OK) {
+            mImageFile=null;
+            mPhotoFile = new File(mAbsolutePhotoPath);
+            Picasso.with(PostActivity.this).load(mPhotoPath).into(mImageViewPost);
+        }
     }
 }
