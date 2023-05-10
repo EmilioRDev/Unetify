@@ -92,6 +92,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if ()
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
