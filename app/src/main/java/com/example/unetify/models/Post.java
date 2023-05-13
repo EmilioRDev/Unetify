@@ -3,17 +3,19 @@ package com.example.unetify.models;
 public class Post {
 
     private String id, title, description, image, idUser;
+    private long timestamp;
 
     public Post() {
 
     }
 
-    public Post(String id, String title, String description, String image, String idUser) {
+    public Post(String id, String title, String description, String image, String idUser, long timestamp) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.image = image;
         this.idUser = idUser;
+        this.timestamp = timestamp;
     }
 
     public String getId() {
@@ -54,5 +56,13 @@ public class Post {
 
     public void setIdUser(String idUser) {
         this.idUser = idUser;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }
