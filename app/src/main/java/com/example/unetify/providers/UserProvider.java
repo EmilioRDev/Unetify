@@ -9,11 +9,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UsersProvider {
+public class UserProvider {
 
     private CollectionReference mCollection;
 
-    public UsersProvider(){
+    public UserProvider(){
         mCollection = FirebaseFirestore.getInstance().collection("Users");
     }
 
@@ -28,6 +28,8 @@ public class UsersProvider {
     public Task<Void> update(User user){
         Map<String, Object> map = new HashMap<>();
         map.put("username",user.getUsername());
+        map.put("image_profile",user.getImageProfile());
+        map.put("image_cover",user.getImageCover());
         return mCollection.document(user.getId()).update(map);
     }
 }

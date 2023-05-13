@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.example.unetify.R;
 import com.example.unetify.models.User;
 import com.example.unetify.providers.AuthProvider;
-import com.example.unetify.providers.UsersProvider;
+import com.example.unetify.providers.UserProvider;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -33,7 +33,7 @@ public class RegisterActivity extends AppCompatActivity {
     TextInputEditText mtextInputUsername, mtextInputEmail, mtextInputPassword, mtextInputConfirmPassword;
     Button mButtonRegister;
     AuthProvider mAuthProvider;
-    UsersProvider mUsersProvider;
+    UserProvider mUserProvider;
     AlertDialog mDialog;
 
     @Override
@@ -49,7 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
         mButtonRegister = findViewById(R.id.btnRegister);
 
         mAuthProvider = new AuthProvider();
-        mUsersProvider = new UsersProvider();
+        mUserProvider = new UserProvider();
         mDialog = new SpotsDialog.Builder()
                 .setContext(this)
                 .setMessage("Espere un momento")
@@ -110,7 +110,7 @@ public class RegisterActivity extends AppCompatActivity {
                     user.setEmail(email);
                     user.setUsername(username);
 
-                    mUsersProvider.create(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    mUserProvider.create(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             mDialog.dismiss();

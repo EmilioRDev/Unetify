@@ -14,15 +14,10 @@ import android.widget.Toast;
 import com.example.unetify.R;
 import com.example.unetify.models.User;
 import com.example.unetify.providers.AuthProvider;
-import com.example.unetify.providers.UsersProvider;
+import com.example.unetify.providers.UserProvider;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import dmax.dialog.SpotsDialog;
 
@@ -31,7 +26,7 @@ public class CompleteProfileActivity extends AppCompatActivity {
     TextInputEditText mtextInputUsername;
     Button mButtonRegister;
     AuthProvider mAuthProvider;
-    UsersProvider mUsersProvider;
+    UserProvider mUserProvider;
     AlertDialog mDialog;
 
     @Override
@@ -43,7 +38,7 @@ public class CompleteProfileActivity extends AppCompatActivity {
         mButtonRegister = findViewById(R.id.btnRegister);
 
         mAuthProvider = new AuthProvider();
-        mUsersProvider = new UsersProvider();
+        mUserProvider = new UserProvider();
         mDialog = new SpotsDialog.Builder()
                 .setContext(this)
                 .setMessage("Espere un momento")
@@ -74,7 +69,7 @@ public class CompleteProfileActivity extends AppCompatActivity {
         user.setId(id);
         user.setUsername(username);
         mDialog.show();
-        mUsersProvider.update(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+        mUserProvider.update(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 mDialog.dismiss();

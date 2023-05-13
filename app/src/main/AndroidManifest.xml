@@ -4,9 +4,10 @@
 
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="true"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -17,19 +18,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Unetify"
         tools:targetApi="31">
-        
+        <activity
+            android:name=".activities.EditProfileActivity"
+            android:exported="false" />
+
         <provider
-            android:authorities="com.example.unetify"
             android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.unetify"
             android:exported="false"
             android:grantUriPermissions="true">
-
-           <meta-data
-               android:name="android.support.FILE_PROVIDER_PATHS"
-               android:resource="@xml/file_paths"/>
-
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
         </provider>
-        
+
         <activity
             android:name=".activities.PostActivity"
             android:exported="false" />

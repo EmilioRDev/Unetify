@@ -8,18 +8,22 @@ import com.google.firebase.firestore.Query;
 
 public class PostProvider {
 
-    CollectionReference mColletion;
+    CollectionReference mCollection;
 
     public PostProvider(){
-        mColletion = FirebaseFirestore.getInstance().collection("Posts");
+        mCollection = FirebaseFirestore.getInstance().collection("Posts");
     }
 
     public Task<Void> save(Post post) {
-        return mColletion.document().set(post);
+        return mCollection.document().set(post);
     }
 
     public Query getAll(){
-        return mColletion.orderBy("title",Query.Direction.DESCENDING);
+        return mCollection.orderBy("title",Query.Direction.DESCENDING);
+    }
+
+    public Query getPostByUser(String id) {
+        return mCollection.whereEqualTo("idUser", id);
     }
 
 }

@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.example.unetify.R;
 import com.example.unetify.models.User;
 import com.example.unetify.providers.AuthProvider;
-import com.example.unetify.providers.UsersProvider;
+import com.example.unetify.providers.UserProvider;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     TextInputEditText mTextInputEmail, mTextInputPassword;
     Button mButtonLogin;
     AuthProvider mAuthProvider;
-    UsersProvider mUsersProvider;
+    UserProvider mUserProvider;
     SignInButton mButtonGoogle;
     private static final String TAG = "MainActivity";
     private static final int RC_SIGN_IN = 9001;
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         mButtonGoogle = findViewById(R.id.btnLoginGoogle);
 
         mAuthProvider = new AuthProvider();
-        mUsersProvider = new UsersProvider();
+        mUserProvider = new UserProvider();
         mDialog = new SpotsDialog.Builder()
                 .setContext(this)
                 .setMessage("Espere un momento")
@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkUserExist(String id) {
-        mUsersProvider.getUser(id).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        mUserProvider.getUser(id).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                     User user = new User();
                     user.setEmail(email);
                     user.setId(id);
-                    mUsersProvider.create(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    mUserProvider.create(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             mDialog.dismiss();
