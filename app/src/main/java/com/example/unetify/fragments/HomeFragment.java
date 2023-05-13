@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,12 +16,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.example.unetify.R;
 import com.example.unetify.activities.MainActivity;
 import com.example.unetify.activities.PostActivity;
+import com.example.unetify.adapters.PostAdapter;
+import com.example.unetify.models.Post;
 import com.example.unetify.providers.AuthProvider;
+import com.example.unetify.providers.PostProvider;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.Query;
 
 import java.util.Objects;
 
@@ -32,6 +40,9 @@ public class HomeFragment extends Fragment {
     FloatingActionButton mbtnAdd;
     Toolbar mToolbar;
     AuthProvider mAuthProvider;
+    RecyclerView mRecyclerView;
+    PostProvider mPostProvider;
+    PostAdapter mPostAdapter;
 
     public HomeFragment() {
 
@@ -44,7 +55,15 @@ public class HomeFragment extends Fragment {
         mView=inflater.inflate(R.layout.fragment_home, container, false);
         mbtnAdd= mView.findViewById(R.id.btnAdd);
         mToolbar = mView.findViewById(R.id.toolbar);
+        mRecyclerView =  mView.findViewById(R.id.recycleViewHome);
+
         mAuthProvider = new AuthProvider();
+        mPostProvider = new PostProvider();
+
+
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        mRecyclerView.setLayoutManager(linearLayoutManager);
 
         ((AppCompatActivity) requireActivity()).setSupportActionBar(mToolbar);
         Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setTitle("Publicaciones");
@@ -56,6 +75,25 @@ public class HomeFragment extends Fragment {
             }
         });
         return mView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Query query = mPostProvider.getAll();
+        FirestoreRecyclerOptions<Post> options =
+                new FirestoreRecyclerOptions.Builder<Post>()
+                .setQuery(query, Post.class)
+                .build();
+        mPostAdapter = new PostAdapter(options, getContext());
+        mRecyclerView.setAdapter(mPostAdapter);
+        mPostAdapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mPostAdapter.stopListening();
     }
 
     private void goToPost() {
