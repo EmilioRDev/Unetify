@@ -2,7 +2,10 @@ package com.example.unetify.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,6 +16,7 @@ import com.example.unetify.models.SliderItem;
 import com.example.unetify.providers.PostProvider;
 import com.example.unetify.providers.UserProvider;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.SliderAnimations;
@@ -36,6 +40,9 @@ public class PostDetailActivity extends AppCompatActivity {
     TextView mTextViewTitle,mTextViewDescription,mTextViewUsername;
     CircleImageView mCircleImageViewProfile;
     Button mButtonShowProfile;
+    FloatingActionButton mButtonComment;
+
+    String mIdUser = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +55,7 @@ public class PostDetailActivity extends AppCompatActivity {
         mTextViewUsername = findViewById(R.id.textViewUsername);
         mCircleImageViewProfile = findViewById(R.id.circleImageProfile);
         mButtonShowProfile = findViewById(R.id.btnShowProfile);
+        mButtonComment = findViewById(R.id.btnComment);
 
         mPostProvider = new PostProvider();
         mUserProvider = new UserProvider();
@@ -55,6 +63,25 @@ public class PostDetailActivity extends AppCompatActivity {
         mExtraPostId = getIntent().getStringExtra("id");
 
         getPost();
+
+
+        mButtonShowProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToShowProfile();
+            }
+        });
+
+    }
+
+    private void goToShowProfile() {
+        if (!mIdUser.equals("")){
+            Intent intent = new Intent(PostDetailActivity.this,UserProfileActivity.class);
+            intent.putExtra("idUser",mIdUser);
+            startActivity(intent);
+        }else {
+            Log.e("ID PROFILE","El id del usuario aun no se carga");
+        }
 
     }
 
@@ -85,8 +112,8 @@ public class PostDetailActivity extends AppCompatActivity {
                         mTextViewDescription.setText(despcription);
                     }
                     if (documentSnapshot.contains("idUser")){
-                        String idUser = documentSnapshot.getString("idUser");
-                        getUserInfo(idUser);
+                        mIdUser = documentSnapshot.getString("idUser");
+                        getUserInfo(mIdUser);
                     }
                     instanceSlider();
                 }
