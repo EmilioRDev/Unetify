@@ -40,6 +40,7 @@ dependencies {
     implementation 'com.github.d-max:spots-dialog:1.1@aar'
     implementation 'id.zelory:compressor:2.1.1'
     implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.github.smarteist:autoimageslider:1.4.0'
 
     implementation platform('com.google.firebase:firebase-bom:31.5.0')
     implementation 'com.google.firebase:firebase-auth:22.0.0'

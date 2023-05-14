@@ -33,6 +33,10 @@
         </provider>
 
         <activity
+            android:name=".activities.PostDetailActivity"
+            android:exported="false"/>
+
+        <activity
             android:name=".activities.PostActivity"
             android:exported="false" />
         <activity
