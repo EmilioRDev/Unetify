@@ -30,6 +30,7 @@
         android:src="@drawable/ic_add"
         android:layout_gravity="bottom|right"
         android:layout_margin="15dp"
+        android:backgroundTint="@color/blue"
         />
 
 </FrameLayout>
