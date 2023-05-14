@@ -15,18 +15,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.unetify.R;
 import com.example.unetify.activities.PostDetailActivity;
 import com.example.unetify.models.Post;
+import com.example.unetify.providers.PostProvider;
+import com.example.unetify.providers.UserProvider;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.squareup.picasso.Picasso;
 
 public class PostAdapter extends FirestoreRecyclerAdapter<Post, PostAdapter.ViewHolder> {
 
     Context context;
+    UserProvider mUserProvider;
 
     public PostAdapter(FirestoreRecyclerOptions<Post> options, Context context){
         super(options);
         this.context = context;
+        mUserProvider = new UserProvider();
     }
 
     @Override
@@ -35,7 +40,7 @@ public class PostAdapter extends FirestoreRecyclerAdapter<Post, PostAdapter.View
         DocumentSnapshot document = getSnapshots().getSnapshot(position);
         String postId = document.getId();
 
-        holder.mTextViewTitle.setText(post.getTitle());
+        holder.mTextViewTitle.setText(post.getTitle().toUpperCase());
         holder.mTextViewDescription.setText(post.getDescription());
         if (post.getImage() != null){
             if (!post.getImage().isEmpty()){
@@ -51,6 +56,21 @@ public class PostAdapter extends FirestoreRecyclerAdapter<Post, PostAdapter.View
                 context.startActivity(intent);
             }
         });
+        getUserInfo(post.getIdUser(),holder);
+    }
+
+    private void getUserInfo(String idUser, ViewHolder holder) {
+        mUserProvider.getUser(idUser).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()){
+                    if (documentSnapshot.contains("username")){
+                        String username = documentSnapshot.getString("username");
+                        holder.mTextViewUsername.setText(username);
+                    }
+                }
+            }
+        });
     }
 
     @NonNull
@@ -61,7 +81,7 @@ public class PostAdapter extends FirestoreRecyclerAdapter<Post, PostAdapter.View
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView mTextViewTitle, mTextViewDescription;
+        TextView mTextViewTitle, mTextViewDescription, mTextViewUsername;
         ImageView mImageViewPost;
 
         View mViewHolder;
@@ -71,6 +91,7 @@ public class PostAdapter extends FirestoreRecyclerAdapter<Post, PostAdapter.View
             mTextViewTitle = view.findViewById(R.id.textViewTitlePostCard);
             mTextViewDescription = view.findViewById(R.id.textViewDescriptionPostCard);
             mImageViewPost = view.findViewById(R.id.imageViewPostCard);
+            mTextViewUsername = view.findViewById(R.id.textViewUsernamePostCard);
             mViewHolder = view;
 
         }
