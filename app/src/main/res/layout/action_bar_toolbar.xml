@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:background="@color/blue"
         app:theme="@style/ToolbarName"
-        app:titleTextColor="@color/white"/>
+        />
 
 
 </com.google.android.material.appbar.AppBarLayout>

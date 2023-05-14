@@ -54,7 +54,10 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:hintEnabled="true"
+                app:boxBackgroundMode="filled"
+                app:boxStrokeWidth="0dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textInputUsername"
@@ -62,7 +65,9 @@
                     android:layout_height="wrap_content"
                     android:hint="Nombre de usuario"
                     android:inputType="text"
-                    android:background="#00FFFFFF"/>
+                    android:background="#00FFFFFF"
+                    android:paddingTop="14dp"
+                    android:paddingBottom="8dp"/>
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 

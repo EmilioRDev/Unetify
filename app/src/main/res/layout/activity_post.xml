@@ -81,7 +81,10 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:hintEnabled="true"
+                app:boxBackgroundMode="filled"
+                app:boxStrokeWidth="0dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textInputTitle"
@@ -90,7 +93,9 @@
                     android:hint="Titulo"
                     android:inputType="text"
                     android:background="#00FFFFFF"
-                    android:maxLength="70"/>
+                    android:maxLength="70"
+                    android:paddingTop="14dp"
+                    android:paddingBottom="8dp"/>
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
@@ -111,7 +116,10 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:hintEnabled="true"
+                app:boxBackgroundMode="filled"
+                app:boxStrokeWidth="0dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textInputDescription"
@@ -120,7 +128,9 @@
                     android:hint="Descripción"
                     android:inputType="textMultiLine"
                     android:background="#00FFFFFF"
-                    android:maxLength="240"/>
+                    android:maxLength="240"
+                    android:paddingTop="14dp"
+                    android:paddingBottom="8dp"/>
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
