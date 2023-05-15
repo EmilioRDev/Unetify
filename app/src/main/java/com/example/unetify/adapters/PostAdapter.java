@@ -85,12 +85,15 @@ public class PostAdapter extends FirestoreRecyclerAdapter<Post, PostAdapter.View
         checkIsExistLike(postId, mAuthProvider.getUid(), holder);
     }
 
-    private void getNumberLikesByPost(String idPost, ViewHolder holder){
+    private void getNumberLikesByPost(String idPost, final ViewHolder holder) {
         mLikeProvider.getLikesByPost(idPost).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                int numberLikes = value.size();
-                holder.mTextViewLike.setText(String.valueOf(numberLikes) + " Me gustas");
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                int numberLikes = 0;
+                if (queryDocumentSnapshots != null) {
+                    numberLikes = queryDocumentSnapshots.size();
+                }
+                holder.mTextViewLike.setText(String.format("%d Me gustas", numberLikes));
             }
         });
     }

@@ -1,6 +1,8 @@
 package com.example.unetify.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,6 +62,11 @@ public class MyPostAdapter extends FirestoreRecyclerAdapter<Post, MyPostAdapter.
         String postId = document.getId();
 
         holder.mTextViewTitle.setText(post.getTitle().toUpperCase());
+        if (post.getIdUser().equals(mAuthProvider.getUid())){
+            holder.mImageViewDelete.setVisibility(View.VISIBLE);
+        }else {
+            holder.mImageViewDelete.setVisibility(View.GONE);
+        }
 
         if (post.getImage() != null){
             if (!post.getImage().isEmpty()){
@@ -78,10 +85,25 @@ public class MyPostAdapter extends FirestoreRecyclerAdapter<Post, MyPostAdapter.
         holder.mImageViewDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                deletePost(postId);
+                showConfirmDelete(postId);
             }
         });
 
+    }
+
+    private void showConfirmDelete(String postId) {
+        new AlertDialog.Builder(context)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Eliminar publicación")
+                .setMessage("¿Estas seguro de realizar esta acción?")
+                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        deletePost(postId);
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
     private void deletePost(String postId) {
