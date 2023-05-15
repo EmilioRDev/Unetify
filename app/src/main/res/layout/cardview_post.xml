@@ -63,11 +63,13 @@
             android:layout_marginHorizontal="15dp">
             
             <ImageView
+                android:id="@+id/imageViewLike"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:src="@drawable/ic_like_gray"/>
 
             <TextView
+                android:id="@+id/textViewLike"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
