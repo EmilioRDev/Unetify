@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +16,16 @@ import android.widget.TextView;
 
 import com.example.unetify.R;
 import com.example.unetify.activities.EditProfileActivity;
+import com.example.unetify.adapters.MyPostAdapter;
+import com.example.unetify.adapters.PostAdapter;
+import com.example.unetify.models.Post;
 import com.example.unetify.providers.AuthProvider;
 import com.example.unetify.providers.PostProvider;
 import com.example.unetify.providers.UserProvider;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
@@ -35,9 +42,12 @@ public class ProfileFragment extends Fragment {
     TextView mTextViewPostNumber;
     ImageView mImageViewCover;
     CircleImageView mCircleImageProfile;
+    RecyclerView mRecyclerView;
     UserProvider mUserProvider;
     AuthProvider mAuthProvider;
     PostProvider mPostProvider;
+
+    MyPostAdapter mAdapter;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -53,6 +63,10 @@ public class ProfileFragment extends Fragment {
         mTextViewPostNumber = mView.findViewById(R.id.textViewPostNumber);
         mCircleImageProfile = mView.findViewById(R.id.circleImageProfile);
         mImageViewCover = mView.findViewById(R.id.imageViewCover);
+        mRecyclerView = mView.findViewById(R.id.recycleViewMyPost);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        mRecyclerView.setLayoutManager(linearLayoutManager);
 
         mLinearLayoutEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +82,25 @@ public class ProfileFragment extends Fragment {
         getPostNumber();
         getUser();
         return mView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Query query = mPostProvider.getPostByUser(mAuthProvider.getUid());
+        FirestoreRecyclerOptions<Post> options =
+                new FirestoreRecyclerOptions.Builder<Post>()
+                        .setQuery(query, Post.class)
+                        .build();
+        mAdapter = new MyPostAdapter(options, getContext());
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mAdapter.stopListening();
     }
 
     private void goToEditProfile() {
