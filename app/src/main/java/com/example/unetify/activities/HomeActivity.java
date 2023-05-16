@@ -10,7 +10,6 @@ import android.view.MenuItem;
 
 import com.example.unetify.R;
 import com.example.unetify.fragments.ChatsFragment;
-import com.example.unetify.fragments.FiltersFragment;
 import com.example.unetify.fragments.HomeFragment;
 import com.example.unetify.fragments.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -38,9 +37,6 @@ public class HomeActivity extends AppCompatActivity {
                         return true;
                     case R.id.itemProfile:
                         openFragment(new ProfileFragment());
-                        return true;
-                    case R.id.itemFilters:
-                        openFragment(new FiltersFragment());
                         return true;
                 }
                 return false;
