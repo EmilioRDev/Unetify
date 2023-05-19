@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.unetify.R;
-import com.example.unetify.fragments.ChatsFragment;
 import com.example.unetify.fragments.HomeFragment;
 import com.example.unetify.fragments.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -31,9 +30,6 @@ public class HomeActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.itemHome:
                         openFragment(new HomeFragment());
-                        return true;
-                    case R.id.itemChats:
-                        openFragment(new ChatsFragment());
                         return true;
                     case R.id.itemProfile:
                         openFragment(new ProfileFragment());
